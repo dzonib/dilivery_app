@@ -4,7 +4,7 @@ const bodyParser = require('body-parser')
 const sequelize = require('./db/sequelize')
 const userRoutes = require('./routes/user')
 const cartRoutes = require('./routes/cart')
-const adminRoutes = require('./routes/admin')
+const adminRoutes = require('./routes/admin-product')
 
 const User = require('./models/user')
 const Cart = require('./models/cart')
