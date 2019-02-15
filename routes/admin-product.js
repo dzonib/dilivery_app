@@ -6,6 +6,8 @@ const Product = require('../models/product')
 
 const router = express.Router()
 
+
+// add product
 router.post('/add-product', auth, async (req, res, next) => {
   try {
     
@@ -32,8 +34,8 @@ router.post('/add-product', auth, async (req, res, next) => {
   }
 })
 
+// update product
 router.put('/update-product/:id', auth, async (req, res, next) => {
-  
   try {
     const user = await User.findByPk(req.user.id)
     if (user.admin === true) {
@@ -53,6 +55,7 @@ router.put('/update-product/:id', auth, async (req, res, next) => {
   }
 })
 
+// delete product
 router.delete('/delete-product/:id', auth, async (req, res, next) => {
   try {
     const user = await User.findByPk(req.user.id)
@@ -60,7 +63,7 @@ router.delete('/delete-product/:id', auth, async (req, res, next) => {
       await Product.destroy({where: {
         id: req.params.id
       }})
-    res.json({success: true})
+    res.json({deleted: true})
     } else {
       res.json({ fail: true })
     }
