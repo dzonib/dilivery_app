@@ -6,18 +6,10 @@ const crypto = require('crypto')
 const User = require('../models/user')
 const Cart = require('../models/cart')
 const auth = require('../middleware/auth')
-const nodemailer = require('nodemailer')
-const sendgridTransport = require('nodemailer-sendgrid-transport')
 const registerValidation = require('../validation/register')
 
 
 const router = express.Router()
-
-const transporter = nodemailer.createTransport(sendgridTransport({
-  auth: {
-    api_key: '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'
-  }
-}))
 
 // REGISTER
 router.post('/register', async (req, res) => {
@@ -37,7 +29,7 @@ router.post('/register', async (req, res) => {
 
     if (checkEmail) {
       errors.email = "Email already taken!"
-      res.status(400).json(errors)
+      return res.status(400).json(errors)
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
@@ -52,18 +44,36 @@ router.post('/register', async (req, res) => {
 
   await user.createCart()
 
-  await transporter.sendMail({
-    to: email, 
-    from: 'shopname@email.com', 
-    subject: 'signup', 
-    html: '<h1>You successfully signed in!</h1>'
-  })
-
   res.json(user)
-
   } catch(e) {
     console.log(e.message)
   }
+})
+
+// Multer
+
+const multer = require('multer')
+
+const upload = multer({
+  dest: 'routes/images',
+  limits: {
+    fileSize: 1048576
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      cb(new Error('Please upload the image with one of following formats - jpg, jpeg or pgn'))
+    }
+
+    cb(undefined, true)
+  }
+})
+
+// UPLOAD PHOTO
+router.post('/upload', upload.single('upload'), (req, res, next) => {
+  res.sendStatus(200)
+    // second callback function needs to have this set of arguments
+}, (error, req, res, next) => {
+  res.status(400).send({error: error.message})
 })
 
 
@@ -97,49 +107,6 @@ router.post('/login', async (req, res) => {
     console.log(e.message)
   }
 })
-
-// Resert password
-router.post('/password-reset', (req, res, next) => {
-
-  crypto.randomBytes(32, async (err, buffer) => {
-    if (err) {
-      console.log(err.message)
-      res.json({error: true})
-    }
-
-    const token = buffer.toString('hex')
-
-    try {
-      const user = await User.findOne({where: {email}})
-
-      if (!user) {
-        res.json({error: "No account with that email found"})
-      }
-
-      user.resetToken = token
-      user.resetTokenExpiration = Date.now() + (1000 * 60 * 60)
-
-      await user.save()
-
-      await transporter.sendMail({
-        to: req.body.email, 
-        from: 'shopname@email.com', 
-        subject: 'Password reset', 
-        html: `
-          <p>You requested a password reset</p>
-          <p>Click this link to set a new password</p>
-        `
-      })
-    } catch(e) {
-      console.log(e.message)
-      res.json({})
-    }
-    res.json(token)
-  })
-
-
-})
-
 
 
 module.exports = router
