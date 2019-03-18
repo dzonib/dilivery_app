@@ -48,7 +48,7 @@ router.put('/update-product/:id', auth, async (req, res, next) => {
 
       res.json(product)
     } else {
-      res.json({fail: true})
+      res.status(403).json({error: "You must be logged to admin account to edit products"})
     }
   } catch(e) {
     console.log(e.message)

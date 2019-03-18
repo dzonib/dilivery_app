@@ -30,6 +30,9 @@ const User = sequelize.define('user', {
     type: Sequelize.STRING,
     allowNull: false
   },
+  avatar: {
+    type: Sequelize.BLOB('long')
+  },
   admin: {
     type: Sequelize.BOOLEAN,
     defaultValue: false
