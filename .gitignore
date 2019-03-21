@@ -55,7 +55,8 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+# Working on 2 machines need env file on github
+# .env
 
 # next.js build output
 .next

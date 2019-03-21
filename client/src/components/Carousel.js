@@ -1,24 +1,25 @@
 import React, {useState} from 'react'
 import Carousel from '@brainhubeu/react-carousel'
 import '@brainhubeu/react-carousel/lib/style.css'
-import img1 from '../images/image1.png'
-import img2 from '../images/image2.jpg'
-import img3 from '../images/image3.jpg'
-import img4 from '../images/image4.jpg'
+import img1 from '../images/img1.jpg'
+import img2 from '../images/img2.jpg'
+import img3 from '../images/img3.jpg'
+import img4 from '../images/img4.jpg'
+import { StyledImg } from '../styles/StyledImg'
 
 
 export default function CarouselComponent() {
 
   return (
     <Carousel
+      infinite
       autoPlay={4000}
       animationSpeed={2000}
-      infinite
     >
-      <img src={img1} alt="" style={{width: "75%", height: "600px"}} />
-      <img src={img2} alt="" style={{width: "75%", height: "600px"}} />
-      <img src={img3} alt="" style={{width: "75%", height: "600px"}} />
-      <img src={img4} alt="" style={{width: "75%", height: "600px"}} />
+      <StyledImg src={img1} alt="" />
+      <StyledImg src={img2} alt="" />
+      <StyledImg src={img3} alt="" />
+      <StyledImg src={img4} alt="" />
     </Carousel>
   )
 }
